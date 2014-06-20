@@ -1,0 +1,175 @@
+DATA DICTIONARY -- Coursera Getting and Cleaning Data Final Project
+
+
+
+Subject
+
+	- number from 1 to 30, specifying the subject identification number
+
+
+
+Activity
+
+	- one of six factors, specifying the activity during the measurements
+
+	LAYING
+	SITTING
+	STANDING
+	WALKING
+	WALKING_DOWNSTAIRS
+	WALKING_UPSTAIRS
+
+
+
+[ further details on the following 66 variables are found at the end ]
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the body linear acceleration time-domain signals in X, Y, and Z axes ]
+mean_tBodyAccMeanX
+mean_tBodyAccMeanY
+mean_tBodyAccMeanZ
+mean_tBodyAccStdDevX
+mean_tBodyAccStdDevY
+mean_tBodyAccStdDevZ
+
+
+
+[the following 6 are the mean of the mean and standard deviation of the gravity acceleration time-domain signals in X, Y, and Z axes ]
+mean_tGravityAccMeanX
+mean_tGravityAccMeanY
+mean_tGravityAccMeanZ
+mean_tGravityAccStdDevX
+mean_tGravityAccStdDevY
+mean_tGravityAccStdDevZ
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the body jerk acceleration time-domain signals in X, Y, and Z axes ]
+mean_tBodyAccJerkMeanX
+mean_tBodyAccJerkMeanY
+mean_tBodyAccJerkMeanZ
+mean_tBodyAccJerkStdDevX
+mean_tBodyAccJerkStdDevY
+mean_tBodyAccJerkStdDevZ
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the body angular velocity time-domain signals in X, Y, and Z axes ]
+mean_tBodyGyroMeanX
+mean_tBodyGyroMeanY
+mean_tBodyGyroMeanZ
+mean_tBodyGyroStdDevX
+mean_tBodyGyroStdDevY
+mean_tBodyGyroStdDevZ
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the body jerk angular velocity time-domain signals in X, Y, and Z axes ]
+mean_tBodyGyroJerkMeanX
+mean_tBodyGyroJerkMeanY
+mean_tBodyGyroJerkMeanZ
+mean_tBodyGyroJerkStdDevX
+mean_tBodyGyroJerkStdDevY
+mean_tBodyGyroJerkStdDevZ
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the magnitude of the body linear acceleration time-domain signals ]
+mean_tBodyAccMagMean
+mean_tBodyAccMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the magnitude gravity acceleration time-domain signals ]
+mean_tGravityAccMagMean
+mean_tGravityAccMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the magnitude of the body jerk acceleration time-domain signals ]
+mean_tBodyAccJerkMagMean
+mean_tBodyAccJerkMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the magnitude of the body angular velocity time-domain signals ]
+mean_tBodyGyroMagMean
+mean_tBodyGyroMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the magnitude of the body jerk angular velocity time-domain signals ]
+mean_tBodyGyroJerkMagMean
+mean_tBodyGyroJerkMagStdDev
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the Fast Fourier Transform of body linear acceleration signals in X, Y, and Z axes ]
+mean_fBodyAccMeanX
+mean_fBodyAccMeanY
+mean_fBodyAccMeanZ
+mean_fBodyAccStdDevX
+mean_fBodyAccStdDevY
+mean_fBodyAccStdDevZ
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the Fast Fourier Transform of body jerk acceleration signals in X, Y, and Z axes ]
+mean_fBodyAccJerkMeanX
+mean_fBodyAccJerkMeanY
+mean_fBodyAccJerkMeanZ
+mean_fBodyAccJerkStdDevX
+mean_fBodyAccJerkStdDevY
+mean_fBodyAccJerkStdDevZ
+
+
+
+[ the following 6 are the mean of the mean and standard deviation of the Fast Fourier Transform of body angular velocity signals in X, Y, and Z axes ]
+mean_fBodyGyroMeanX
+mean_fBodyGyroMeanY
+mean_fBodyGyroMeanZ
+mean_fBodyGyroStdDevX
+mean_fBodyGyroStdDevY
+mean_fBodyGyroStdDevZ
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the Fast Fourier Transform of the magnitude of body linear acceleration ]
+mean_fBodyAccMagMean
+mean_fBodyAccMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the Fast Fourier Transform of the magnitude of body jerk acceleration ]
+mean_fBodyBodyAccJerkMagMean
+mean_fBodyBodyAccJerkMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the Fast Fourier Transform of the magnitude of body angular velocity ]
+mean_fBodyBodyGyroMagMean
+mean_fBodyBodyGyroMagStdDev
+
+
+
+[ the following 2 are the mean of the mean and standard deviation of the Fast Fourier Transform of the magnitude of body jerk angular velocity ]
+mean_fBodyBodyGyroJerkMagMean
+mean_fBodyBodyGyroJerkMagStdDev
+
+
+==========
+
+
+The preceding 66 variables reflect the mean or standard deviation of 33 different measurements, taking the AVERAGE of all available measurements for a given subject and activity.
+
+The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz. Then they were filtered using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Similarly, the acceleration signal was then separated into body and gravity acceleration signals (tBodyAcc-XYZ and tGravityAcc-XYZ) using another low pass Butterworth filter with a corner frequency of 0.3 Hz. 
+
+Subsequently, the body linear acceleration and angular velocity were derived in time to obtain Jerk signals (tBodyAccJerk-XYZ and tBodyGyroJerk-XYZ). Also the magnitude of these three-dimensional signals were calculated using the Euclidean norm (tBodyAccMag, tGravityAccMag, tBodyAccJerkMag, tBodyGyroMag, tBodyGyroJerkMag). 
+
+Finally a Fast Fourier Transform (FFT) was applied to some of these signals producing fBodyAcc-XYZ, fBodyAccJerk-XYZ, fBodyGyro-XYZ, fBodyAccJerkMag, fBodyGyroMag, fBodyGyroJerkMag. (Note the 'f' to indicate frequency domain signals). 
+
+These signals were used to estimate variables of the feature vector for each pattern:  
+'-XYZ' is used to denote 3-axial signals in the X, Y and Z directions.
+
+==========
