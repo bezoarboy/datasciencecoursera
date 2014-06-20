@@ -10,15 +10,19 @@ Course #3 -- "Getting and Cleaning Data" -- Final Project
 In this repository directory are several files for the final project for Coursera's "Getting and Cleaning Data", including:
 
 * README.md
+
    this file
 
 * run_analysis.R
+
    R script to analyze the data
 
 * tidyTableOutput.csv
+
    Tidy data set output of run_analysis.R
 
 * codebook.txt
+
    Code book describing each column variable of the tidy data set output of run_analysis.R
 
 ---
