@@ -1,9 +1,6 @@
-datasciencecoursera
-===================
+# Coursera Data Science Repository
 
-Coursera Data Science Repository
-
-Course #3 -- "Getting and Cleaning Data" -- Final Project
+## Course #3 -- "Getting and Cleaning Data" -- Final Project
 
 ---
 
