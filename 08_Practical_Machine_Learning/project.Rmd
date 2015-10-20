@@ -1,11 +1,15 @@
 ---
 title: "Practical Machine Learning Project"
 author: "Joseph Chou"
-date: "October 19, 2015"
+date: "October 20, 2015"
 output: html_document
 ---
 
-Data from accelerometers on the belt, forearm, arm, and dumbell were collected from 6 participants who were asked to perform barbell lifts correctly and incorrectly in 5 different ways. Info at http://groupware.les.inf.puc-rio.br/har (Weight Lifting Exercise Dataset). The goal is to predict the manner in which participants did the exercise -- the "classe" variable in the training set.
+### Introduction
+
+Data from accelerometers on the belt, forearm, arm, and dumbell were collected from 6 participants who were asked to perform barbell lifts correctly and incorrectly in 5 different ways (information on the Weight Lifting Exercise Dataset at http://groupware.les.inf.puc-rio.br/har). The goal is to develope an algorithm to predict the way in which participants did the exercise (the "classe" variable in the training set).
+
+### Initialization
 
 ```{r initialization, warning = FALSE, message = FALSE, cache = TRUE}
 setwd("~/Desktop/08 Practical machine learning/project")
@@ -15,12 +19,11 @@ library(randomForest)
 library(caret)
 
 training <- read.csv('pml-training.csv', stringsAsFactors = TRUE)
-testing <- read.csv('pml-testing.csv', stringsAsFactors = TRUE)
 ```
 
 ### Data cleaning
 
-Initial exploration of the training data showed the outcome variable ("classe") and an additional 159 possible predictors. Further inspection showed that many possible predictors had a very high number of empty fields. These information-scarce predictors were removed. In addition, the first 7 columns included variables indices, timestamps, and usernames, and were also removed, resulting in a final training set of 19,622 observations on 53 variables (including the outcome).
+The training data includes 19,622 observations with the outcome variable ("classe") and an additional 159 possible predictors. Further inspection showed that many possible predictors were mostly empty, consisting of empty strings or NA. These information-scarce predictors were removed. In addition, the first 7 columns included variables indices, timestamps, and usernames, and were also removed, resulting in a final training set of 19,622 observations on 53 variables (including the outcome).
 
 ```{r data_preparation, warning = FALSE, message = FALSE, cache = TRUE}
 t <- training
@@ -31,13 +34,15 @@ t <- t[ , -c(1:7)] # remove X, user_name, 3 time stamps, new_window, and num_win
 
 ### Overall Study Design
 
-* error rate definition: percent accuracy of "classe" prediction
+Outline of study design
+
+* error rate: defined as the percent accuracy of the "classe" prediction
 * split data into training and testing sets
 * choose features using cross-validation, on the training set
 * choose model using cross-validation, on the training set
 * apply prediction model to testing set, to estimate out of sample error
 
-The data was split 75/25, to reserve a subset of the training data for model validation, to allow estimation of out of sample error on a data subset never used for model generation.
+The data was splitto reserve 75% of the data ('train') for model selection and generation and 25% of the data ('test') for final model validation, to allow estimation of out of sample error on a data subset never used for model generation.
 
 ```{r data_split, warning = FALSE, message = FALSE, cache = TRUE}
 
@@ -47,6 +52,16 @@ train <- t[ in_train, ]
 test <- t[ -in_train, ]
 ```
 
+### Model selection
+
+Five-fold cross validation was used to compare four different classification algorithms for model selection:
+
+* rpart: classification tree
+* lda: linear discriminant analysis
+* gbm: boosted trees
+* rf: random forests
+
+Each of the 4 models was separately trained on k=5 different folds of the data and the average prediction accuracy for each model compared.
 
 ```{r cross_validation_methods, warning = FALSE, message = FALSE, cache = TRUE}
 k <- 5 # k-fold cross-validation
@@ -75,28 +90,39 @@ acc_df[ , 'a'] <- NULL # remove the initial placeholder column
 sapply(acc_df, function(x) { round(mean(x),3) }) # display mean prediction accuracy for each method
 ```
 
+The random forest classifier had the best average prediction accuracy of 97.2%, followed by boosted trees ('gbm') at 95.9%, with the other two classifiers with significantly worse performance. Because the performance seems quite good, and because we don't have an odd number of good models (to allow easy combination of predictors and majority vote), we will elect to use the random forest algorithm for final model creation.
 
-```{r, warning = FALSE, message = FALSE, cache = TRUE}
-# varImpPlot(model_rf)
-# pred <- predict( model_rf, train)
-# confusionMatrix(pred, train$classe)
-# pred2 <- predict( model_rf, test)
-# confusionMatrix(pred2, test$classe)
+### Final model generation
+
+Using k-fold cross-validation comparison of models allowed a better estimate of prediction accuracy than simply comparing the training set errors if the entire training set were used. However, now that a model has been selected, we will create the final model using the entire 75% training set.
+
+```{r random_forest, warning = FALSE, message = FALSE, cache = TRUE}
+model_rf <- randomForest( classe ~ ., data = train, importance = TRUE)
 ```
 
-Assignment:
+With random forests, we can assess the order of importance of predictor variables. As can be seen, a subset of the 52 predictors may be sufficient -- in the future, if there were concerns for overfitting resulting in worsened test error, we could repeat k-fold cross validation to select the optimal variables to maximize performance.
 
-* may use any of the other variables as predictors
-* create a report justifying model building, cross-validation, expected out-of-sample error
-* use model to predict 20 different test cases
+```{r rf_variable_plot, warning = FALSE, message = FALSE, cache = TRUE}
+varImpPlot(model_rf)
+```
 
-* submit a link to a Github repo with your R markdown and compiled HTML file
-* < 2000 words and < 5 figures
-* submit a repo with a gh-pages branch so the HTML page can be viewed online
+### Prediction of out of sample performance
 
-Grading:
+Finally, using the 25% of the original dataset which has never been used for model selection, we can obtain our best available assessment of out of sample test error, as a prediction of how our model will perform on new measurements.
 
-* submitted a github repo?
-* describe expected out of sample error and estimate the error appropriately with cross-validation?
-* build a machine learning algorithm to predict activity quality from activity monitors?
+```{r rf_assessment, warning = FALSE, message = FALSE, cache = TRUE}
+pred <- predict( model_rf, test)
+confusionMatrix(pred, test$classe)
+saveRDS(model_rf, "model_rf.rds") # allow reloading the model to predict on future data
+# model_rf <- readRDS("model_rf.rds") # command to reload the model
+```
+
+Our final model has an estimated out of sample prediction accuracy of **99.6%**.
+
+We can also predict on the small file of 20 observations, for separate submission.
+
+```{r rf_twenty, warning = FALSE, message = FALSE, cache = TRUE}
+test_cases <- read.csv('pml-testing.csv', stringsAsFactors = TRUE)
+predict(model_rf, test_cases)
+```
 
