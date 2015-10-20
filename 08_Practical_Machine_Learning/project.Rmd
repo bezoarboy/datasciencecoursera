@@ -7,7 +7,7 @@ output: html_document
 
 ### Introduction
 
-Data from accelerometers on the belt, forearm, arm, and dumbell were collected from 6 participants who were asked to perform barbell lifts correctly and incorrectly in 5 different ways (information on the Weight Lifting Exercise Dataset at http://groupware.les.inf.puc-rio.br/har). The goal is to develope an algorithm to predict the way in which participants did the exercise (the "classe" variable in the training set).
+Data from accelerometers on the belt, forearm, arm, and dumbell were collected from 6 participants who were asked to perform barbell lifts correctly and incorrectly in 5 different ways (information on the Weight Lifting Exercise Dataset at http://groupware.les.inf.puc-rio.br/har). The goal is to develop an algorithm to predict the way in which participants did the exercise (the "classe" variable in the training set).
 
 ### Initialization
 
@@ -42,7 +42,7 @@ Outline of study design
 * choose model using cross-validation, on the training set
 * apply prediction model to testing set, to estimate out of sample error
 
-The data was splitto reserve 75% of the data ('train') for model selection and generation and 25% of the data ('test') for final model validation, to allow estimation of out of sample error on a data subset never used for model generation.
+The data was split to reserve 75% of the data ('train') for model selection and generation and 25% of the data ('test') for final model validation, to allow estimation of out of sample error on a data subset never used for model generation.
 
 ```{r data_split, warning = FALSE, message = FALSE, cache = TRUE}
 
