@@ -1,0 +1,102 @@
+---
+title: "Practical Machine Learning Project"
+author: "Joseph Chou"
+date: "October 19, 2015"
+output: html_document
+---
+
+Data from accelerometers on the belt, forearm, arm, and dumbell were collected from 6 participants who were asked to perform barbell lifts correctly and incorrectly in 5 different ways. Info at http://groupware.les.inf.puc-rio.br/har (Weight Lifting Exercise Dataset). The goal is to predict the manner in which participants did the exercise -- the "classe" variable in the training set.
+
+```{r initialization, warning = FALSE, message = FALSE, cache = TRUE}
+setwd("~/Desktop/08 Practical machine learning/project")
+
+library(plyr)
+library(randomForest)
+library(caret)
+
+training <- read.csv('pml-training.csv', stringsAsFactors = TRUE)
+testing <- read.csv('pml-testing.csv', stringsAsFactors = TRUE)
+```
+
+### Data cleaning
+
+Initial exploration of the training data showed the outcome variable ("classe") and an additional 159 possible predictors. Further inspection showed that many possible predictors had a very high number of empty fields. These information-scarce predictors were removed. In addition, the first 7 columns included variables indices, timestamps, and usernames, and were also removed, resulting in a final training set of 19,622 observations on 53 variables (including the outcome).
+
+```{r data_preparation, warning = FALSE, message = FALSE, cache = TRUE}
+t <- training
+t <- t[ , -which(sapply( t, function(x) { sum(is.na(x))}) > 19000)] # remove when majority are NA
+t <- t[ , -which(sapply( t, function(x) { sum(x == "") }) > 19000)] # remove when majority are ""
+t <- t[ , -c(1:7)] # remove X, user_name, 3 time stamps, new_window, and num_window
+```
+
+### Overall Study Design
+
+* error rate definition: percent accuracy of "classe" prediction
+* split data into training and testing sets
+* choose features using cross-validation, on the training set
+* choose model using cross-validation, on the training set
+* apply prediction model to testing set, to estimate out of sample error
+
+The data was split 75/25, to reserve a subset of the training data for model validation, to allow estimation of out of sample error on a data subset never used for model generation.
+
+```{r data_split, warning = FALSE, message = FALSE, cache = TRUE}
+
+set.seed(2357)
+in_train <- createDataPartition( y = training$classe, p = 0.75, list = FALSE)
+train <- t[ in_train, ]
+test <- t[ -in_train, ]
+```
+
+
+```{r cross_validation_methods, warning = FALSE, message = FALSE, cache = TRUE}
+k <- 5 # k-fold cross-validation
+folds <- createFolds(y = train$classe, k = k, list = TRUE, returnTrain = TRUE)
+
+methods = c("rpart", "lda", "gbm", "rf") # methods to compare via k-fold cross-validation
+acc_df <- data.frame( a = numeric(k) ) # probably a better way exists, but need to pre-allocate rows frame
+
+for (method in methods) { # iterate through each method to test
+  accuracy <- c() # vector of prediction accuracy, will be length k
+  for (fold in folds) { # iterate through each of k folds
+    # caret might have a better way, but this allows different model parameters
+    if ( method == "gbm") { # verbose = FALSE to reduce output spam
+      model <- train( classe ~ ., data = train[fold,], method = method, verbose = FALSE)
+    } else if ( method == "rf" ) { # may be faster than using caret
+      randomForest( classe ~ ., data = train[fold,], importance = TRUE)
+    } else { # these seem fine with caret
+      model <- train( classe ~ ., data = train[fold,], method = method) # works for rpart and lda
+    }
+    pred <- predict(model, train[-fold, ])
+    accuracy <- c(accuracy, mean(pred == train[-fold, "classe"])) # build vector of prediction accuracies
+  }
+  acc_df[, method] <- accuracy # add new column of accuracies to dataframe of accuracies
+}
+acc_df[ , 'a'] <- NULL # remove the initial placeholder column
+sapply(acc_df, function(x) { round(mean(x),3) }) # display mean prediction accuracy for each method
+```
+
+
+```{r, warning = FALSE, message = FALSE, cache = TRUE}
+# varImpPlot(model_rf)
+# pred <- predict( model_rf, train)
+# confusionMatrix(pred, train$classe)
+# pred2 <- predict( model_rf, test)
+# confusionMatrix(pred2, test$classe)
+```
+
+Assignment:
+
+* may use any of the other variables as predictors
+* create a report justifying model building, cross-validation, expected out-of-sample error
+* use model to predict 20 different test cases
+
+* submit a link to a Github repo with your R markdown and compiled HTML file
+* < 2000 words and < 5 figures
+* submit a repo with a gh-pages branch so the HTML page can be viewed online
+
+Grading:
+
+* submitted a github repo?
+* describe expected out of sample error and estimate the error appropriately with cross-validation?
+* build a machine learning algorithm to predict activity quality from activity monitors?
+
